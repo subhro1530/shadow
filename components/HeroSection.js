@@ -34,7 +34,7 @@ export default function HeroSection() {
         zIndex: 1,
       }}
     >
-      {/* Video Background */}
+      {/* Fixed Video Background */}
       <video
         ref={videoRef}
         autoPlay
@@ -42,13 +42,12 @@ export default function HeroSection() {
         loop
         playsInline
         style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
+          position: "fixed", // Make video position fixed
+          top: 0,
+          left: 0,
           width: "100%",
           height: "100%",
           objectFit: "cover",
-          transform: "translate(-50%, -50%)",
           zIndex: 0,
         }}
       >
