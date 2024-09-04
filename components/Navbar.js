@@ -23,7 +23,7 @@ export default function Navbar() {
         <Flex gap={6} alignItems="center">
           {/* Updated Link styles */}
           <Link
-            href="#"
+            href="/pdf-extraction"
             color="white"
             fontSize="lg"
             position="relative"

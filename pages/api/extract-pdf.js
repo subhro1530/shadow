@@ -1,6 +1,8 @@
-import formidable from "formidable";
+import multer from "multer";
 import fs from "fs";
-import { exec } from "child_process";
+import pdf from "pdf-parse";
+
+const upload = multer({ dest: "uploads/" });
 
 export const config = {
   api: {
@@ -8,34 +10,43 @@ export const config = {
   },
 };
 
-const runPythonScript = (filePath) => {
-  return new Promise((resolve, reject) => {
-    exec(`python3 extract_text.py ${filePath}`, (error, stdout, stderr) => {
-      if (error) {
-        reject(stderr);
-      }
-      resolve(stdout);
-    });
-  });
+const extractTextFromPDF = async (filePath) => {
+  const dataBuffer = fs.readFileSync(filePath);
+  const data = await pdf(dataBuffer);
+  return data.text;
 };
 
-export default async function handler(req, res) {
-  const form = new formidable.IncomingForm();
-
-  form.parse(req, async (err, fields, files) => {
+const handler = async (req, res) => {
+  upload.single("pdf")(req, res, async (err) => {
     if (err) {
-      res.status(500).json({ error: "Error parsing the file" });
+      console.error("Error uploading file:", err);
+      res.status(500).json({ error: "Error uploading file" });
       return;
     }
 
-    const filePath = files.pdf.filepath;
+    if (!req.file) {
+      res.status(400).json({ error: "No file uploaded" });
+      return;
+    }
+
+    const filePath = req.file.path;
 
     try {
-      const text = await runPythonScript(filePath);
+      const text = await extractTextFromPDF(filePath);
+      res.setHeader("Content-Type", "application/json");
       res.status(200).json({ text });
     } catch (error) {
-      console.error(error);
+      console.error("Error processing PDF:", error);
       res.status(500).json({ error: "Error processing PDF" });
+    } finally {
+      // Clean up uploaded file
+      fs.unlink(filePath, (unlinkErr) => {
+        if (unlinkErr) {
+          console.error("Error deleting file:", unlinkErr);
+        }
+      });
     }
   });
-}
+};
+
+export default handler;
