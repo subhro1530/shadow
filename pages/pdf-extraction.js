@@ -11,13 +11,15 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { CopyIcon } from "@chakra-ui/icons";
+import { CopyIcon, ArrowBackIcon } from "@chakra-ui/icons";
+import { useRouter } from "next/router";
 
 export default function PdfExtractionPage() {
   const [pdfData, setPdfData] = useState(null);
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const toast = useToast();
+  const router = useRouter();
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -80,10 +82,25 @@ export default function PdfExtractionPage() {
     }
   };
 
+  const handleBackClick = () => {
+    router.back(); // Go back to the previous page
+  };
+
   return (
-    <Box bg="purple.800" color="white" minHeight="100vh" py={12}>
+    <Box bg="purple.900" color="white" minHeight="100vh" py={12}>
       <Container maxW="container.md" textAlign="center">
-        <VStack spacing={8}>
+        <IconButton
+          aria-label="Back"
+          icon={<ArrowBackIcon />}
+          onClick={handleBackClick}
+          colorScheme="whiteAlpha"
+          variant="outline"
+          position="absolute"
+          top={4}
+          left={4}
+          zIndex={1}
+        />
+        <VStack spacing={8} mt={10}>
           <Heading size="3xl" fontWeight="light">
             PDF Extraction
           </Heading>
