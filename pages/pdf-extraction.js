@@ -18,6 +18,8 @@ export default function PdfExtractionPage() {
   const [pdfData, setPdfData] = useState(null);
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [summarizing, setSummarizing] = useState(false);
+  const [summary, setSummary] = useState(null);
   const toast = useToast();
   const router = useRouter();
 
@@ -66,6 +68,38 @@ export default function PdfExtractionPage() {
         duration: 5000,
         isClosable: true,
       });
+    }
+  };
+
+  const handleSummarize = async () => {
+    if (!pdfData) return;
+
+    setSummarizing(true);
+    try {
+      const response = await fetch("/api/summarize", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: pdfData }),
+      });
+
+      const data = await response.json();
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      setSummary(data.summary);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to summarize the text.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setSummarizing(false);
     }
   };
 
@@ -148,6 +182,30 @@ export default function PdfExtractionPage() {
                 variant="outline"
                 mt={4}
               />
+            </Box>
+          )}
+          {pdfData && (
+            <Button
+              colorScheme="teal"
+              onClick={handleSummarize}
+              isLoading={summarizing}
+              disabled={summarizing}
+            >
+              Summarize PDF
+            </Button>
+          )}
+          {summary && (
+            <Box
+              mt={4}
+              p={4}
+              bg="rgba(255, 255, 255, 0.2)"
+              borderRadius="md"
+              maxW="2xl"
+              mx="auto"
+              textAlign="left"
+            >
+              <Text fontWeight="bold">Summary:</Text>
+              <Text whiteSpace="pre-wrap">{summary}</Text>
             </Box>
           )}
         </VStack>
