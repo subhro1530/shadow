@@ -47,7 +47,7 @@ export default function Navbar() {
             PDF Extractor
           </Link>
           <Link
-            href="#"
+            href="/scraper"
             color="white"
             fontSize="lg"
             position="relative"
