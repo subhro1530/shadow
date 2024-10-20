@@ -1,21 +1,18 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Container,
-  VStack,
   Heading,
+  VStack,
   Text,
-  Button,
   Input,
-  Textarea,
+  Button,
   Spinner,
-  Select,
 } from "@chakra-ui/react";
+import { jsPDF } from "jspdf";
 
 export default function WebScanner() {
   const [url, setUrl] = useState("");
-  const [instructions, setInstructions] = useState("");
-  const [platform, setPlatform] = useState(""); // New state for platform
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
 
@@ -23,23 +20,51 @@ export default function WebScanner() {
     setLoading(true);
     setResult(null);
 
+    // Validate the URL input
+    if (!url || !isValidDomain(url)) {
+      setResult({
+        error: "Invalid domain. Please provide a valid domain name.",
+      });
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await fetch("http://127.0.0.1:5000/scan", {
+      const response = await fetch("/api/scan", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ url, instructions, platform }), // Send platform as well
+        body: JSON.stringify({ url }),
       });
 
       const data = await response.json();
-      setResult(data.profile_data);
+      setResult(data);
     } catch (error) {
-      console.error("Error scanning the profile:", error);
-      setResult({ error: "Failed to scan the profile" });
+      console.error("Error scanning the website:", error);
+      setResult({ error: "Failed to scan the website" });
     } finally {
       setLoading(false);
     }
+  };
+
+  const isValidDomain = (domain) => {
+    // Basic domain validation (adjust as needed)
+    const domainRegex =
+      /^(?!:\/\/)([a-zA-Z0-9-_]+\.)?[a-zA-Z0-9-_]+\.[a-zA-Z]{2,11}?$/;
+    return domainRegex.test(domain);
+  };
+
+  const downloadPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Website Vulnerability Scan Report", 10, 10);
+    doc.text(`Open Ports: ${result.open_ports.join(", ")}`, 10, 20);
+    doc.text(
+      `Valid Directories: ${result.valid_directories.join(", ")}`,
+      10,
+      30
+    );
+    doc.save("scan_report.pdf");
   };
 
   return (
@@ -47,16 +72,16 @@ export default function WebScanner() {
       <Container maxW="container.lg" textAlign="center" color="white">
         <VStack spacing={6}>
           <Heading as="h1" size="2xl" fontWeight="lighter">
-            Web Scanner
+            Website Vulnerability Scanner
           </Heading>
           <Text fontSize="xl" maxW="2xl" lineHeight="tall">
-            Scan through social media accounts and gather the data you need.
-            Just provide the URL, select the platform, and we will do the rest.
+            Scan websites for open ports and valid directories. Just provide the
+            domain name, and we will do the rest.
           </Text>
 
           {/* URL Input */}
           <Input
-            placeholder="Enter Social Media Profile URL"
+            placeholder="Enter Website Domain (e.g., example.com)"
             size="lg"
             variant="outline"
             bg="rgba(255, 255, 255, 0.1)"
@@ -64,37 +89,6 @@ export default function WebScanner() {
             color="white"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-          />
-
-          {/* Platform Dropdown */}
-          <Select
-            placeholder="Select Social Media Platform"
-            size="lg"
-            variant="outline"
-            bg="rgba(255, 255, 255, 0.1)"
-            border="1px solid rgba(255, 255, 255, 0.4)"
-            color="white"
-            value={platform}
-            onChange={(e) => setPlatform(e.target.value)}
-          >
-            <option value="facebook">Facebook</option>
-            <option value="instagram">Instagram</option>
-            <option value="twitter">Twitter</option>
-            <option value="linkedin">LinkedIn</option>
-          </Select>
-
-          {/* Additional Instructions */}
-          <Textarea
-            placeholder="Additional Instructions (Optional)"
-            size="lg"
-            variant="outline"
-            bg="rgba(255, 255, 255, 0.1)"
-            border="1px solid rgba(255, 255, 255, 0.4)"
-            color="white"
-            value={instructions}
-            onChange={(e) => setInstructions(e.target.value)}
-            mt={4}
-            rows={4}
           />
 
           {/* Scan Button */}
@@ -120,9 +114,23 @@ export default function WebScanner() {
                 <Text color="red.500">{result.error}</Text>
               ) : (
                 <>
-                  <Text>Name: {result.name}</Text>
-                  <Text>Bio: {result.bio}</Text>
-                  {/* Add more fields as needed */}
+                  <Text>Open Ports: {result.open_ports.join(", ")}</Text>
+                  <Text>
+                    Valid Directories: {result.valid_directories.join(", ")}
+                  </Text>
+                  <Button
+                    size="lg"
+                    mt={4}
+                    px={8}
+                    py={6}
+                    bg="rgba(255, 255, 255, 0.1)"
+                    backdropFilter="blur(10px)"
+                    color="white"
+                    fontWeight="bold"
+                    onClick={downloadPDF}
+                  >
+                    Download Report as PDF
+                  </Button>
                 </>
               )}
             </Box>

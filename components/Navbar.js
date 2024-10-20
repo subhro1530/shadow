@@ -47,6 +47,30 @@ export default function Navbar() {
             PDF Extractor
           </Link>
           <Link
+            href="/web-scanner"
+            color="white"
+            fontSize="lg"
+            position="relative"
+            _hover={{
+              color: "purple.300",
+              _after: {
+                width: "100%",
+              },
+            }}
+            _after={{
+              content: `""`,
+              position: "absolute",
+              bottom: "-2px",
+              left: "0",
+              width: "0",
+              height: "2px",
+              bg: "purple.300",
+              transition: "width 0.3s ease-in-out",
+            }}
+          >
+            Web Vulnerability
+          </Link>
+          <Link
             href="/scraper"
             color="white"
             fontSize="lg"
@@ -68,31 +92,7 @@ export default function Navbar() {
               transition: "width 0.3s ease-in-out",
             }}
           >
-            Web Scanner
-          </Link>
-          <Link
-            href="#"
-            color="white"
-            fontSize="lg"
-            position="relative"
-            _hover={{
-              color: "purple.300",
-              _after: {
-                width: "100%",
-              },
-            }}
-            _after={{
-              content: `""`,
-              position: "absolute",
-              bottom: "-2px",
-              left: "0",
-              width: "0",
-              height: "2px",
-              bg: "purple.300",
-              transition: "width 0.3s ease-in-out",
-            }}
-          >
-            Spoofer
+            Social Scraper
           </Link>
           <Link
             href="#"
