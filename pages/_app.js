@@ -2,6 +2,7 @@ import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 import Head from "next/head";
+import Footer from "../components/Footer";
 
 // Create a new Emotion cache for Chakra UI to prevent potential conflicts
 const emotionCache = createCache({ key: "css" });
@@ -31,6 +32,7 @@ function MyApp({ Component, pageProps }) {
           <title>Shadow - Social Media Investigator</title>
         </Head>
         <Component {...pageProps} />
+        <Footer />
       </ChakraProvider>
     </CacheProvider>
   );
