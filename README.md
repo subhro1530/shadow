@@ -1,8 +1,9 @@
 # Shadow: Social Media Investigator
 
 > **Investigate and analyze social media data and documents for the presence of personally identifiable information (PII) and more.**
+![image](https://github.com/user-attachments/assets/cfa3e807-2137-4e05-8afc-9317cad3ad75)
+![image](https://github.com/user-attachments/assets/8997dd11-4c4f-498c-b61b-fb46d51dab6f)
 
-![Project Preview](#) <!-- Add a preview image or video link here -->
 
 ## Table of Contents
 
