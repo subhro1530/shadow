@@ -97,7 +97,7 @@ export default function Navbar() {
             Social Scraper
           </Link>
           <Link
-            href="#"
+            href="https://github.com/subhro1530/shadow/tree/master/scripts"
             color="white"
             fontSize="lg"
             position="relative"

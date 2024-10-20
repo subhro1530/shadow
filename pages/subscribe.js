@@ -25,7 +25,7 @@ const Subscribe = () => {
       <Box
         p={10} // Increased padding for a spacious layout
         mt="80px" // Ensure space below fixed navbar
-        bg="gray.900" // Dark background for contrast
+        // bg="gray.900" // Dark background for contrast
         color="white" // White text for better visibility
         borderRadius="md" // Rounded corners
       >
