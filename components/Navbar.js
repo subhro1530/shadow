@@ -1,6 +1,8 @@
 import { Box, Flex, Link, Button, Spacer, Image } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 
 export default function Navbar() {
+ 
   return (
     <Box
       as="nav"
@@ -121,6 +123,7 @@ export default function Navbar() {
 
           {/* Updated Button styles */}
           <Button
+            onClick={() => router.push("/subscribe")}
             bg="rgba(255, 255, 255, 0.2)" // Glass effect background
             backdropFilter="blur(10px)" // Add glassy background blur
             border="1px solid rgba(255, 255, 255, 0.3)" // Subtle border
